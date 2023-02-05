@@ -10,7 +10,7 @@ style.textContent = /*css*/`
 
 const template = document.createElement('template')
 template.innerHTML = /*html*/`
-	<link rel="stylesheet" type="text/css" href="/app.css"/>
+	<link rel="stylesheet" type="text/css" href="../app.css"/>
 	<div id="container">
 		<!-- <button id="saveBt">Salvar projeto</button>
 		<button id="openBt">Abrir projeto</button> -->
