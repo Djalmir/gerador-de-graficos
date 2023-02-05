@@ -26,7 +26,7 @@ template.innerHTML = /*html*/`
 	</div>
 `
 
-import graphicSquare from '/components/graphicSquare.js'
+import graphicSquare from './graphicSquare.js'
 export default class AppGraphic extends HTMLElement {
 	static get observedAttributes() {
 		return ['dimensions']
