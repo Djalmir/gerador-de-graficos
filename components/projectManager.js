@@ -69,6 +69,7 @@ export default class projectManager extends HTMLElement {
 		}
 
 		this.shadowRoot.querySelector('#exportBt').onclick = () => {
+			let keepBorders = confirm('Deseja manter as bordas?')
 			document.querySelector('#appGraphic').currentZoom = 1
 			let container = document.querySelector('#appGraphic').shadowRoot.querySelector('#container')
 			container.scrollTo(0, 0)
@@ -77,7 +78,10 @@ export default class projectManager extends HTMLElement {
 			let canvas = document.createElement('canvas')
 			let columns = Number(localStorage.getItem('dimensions').split(',')[0].trim()) || 16
 			let rows = Number(localStorage.getItem('dimensions').split(',')[1].trim()) || 16
-			canvas.width = columns * 32 + 1
+			if (keepBorders)
+				canvas.width = columns * 32 + 1
+			else
+				canvas.width = columns * 32 - 1
 			canvas.height = rows * 32
 			let ctx = canvas.getContext('2d')
 			ctx.fillStyle = localStorage.getItem('borderColor') || '#202020'
@@ -86,7 +90,10 @@ export default class projectManager extends HTMLElement {
 			squares.forEach((square) => {
 				let boundings = square.getBoundingClientRect()
 				ctx.fillStyle = square.getAttribute('color') || localStorage.getItem('backgroundColor') || '#202020'
-				ctx.fillRect(boundings.x + 2 - square.parentElement.offsetLeft, boundings.y + 1 - square.parentElement.offsetTop, 30, 30)
+				if (keepBorders)
+					ctx.fillRect(boundings.x + 2 - square.parentElement.offsetLeft, boundings.y + 1 - square.parentElement.offsetTop, 30, 30)
+				else
+					ctx.fillRect(boundings.x - square.parentElement.offsetLeft, boundings.y - square.parentElement.offsetTop, 33, 32)
 			})
 
 			let img = new Image()
@@ -95,7 +102,8 @@ export default class projectManager extends HTMLElement {
 			img.style.height = '100%'
 			let a = document.createElement('a')
 			a.href = img.src
-			a.download = `Graphic_${ new Date() }.png`
+			let fileName = prompt('Digite o nome da imagem')
+			a.download = `${ fileName }.png`
 			a.click()
 			a.remove()
 		}

@@ -46,7 +46,11 @@ export default class AppGraphic extends HTMLElement {
 			return false
 		}
 
+		this.qtt = 0
+		this.timer = null
 		this.generateNewGraph = (dimensions, children) => {
+			clearTimeout(this.timer)
+			this.qtt = 0
 			if (document.querySelector('#appLoading')) {
 				document.body.removeChild(this.loading)
 				this.loading = null
@@ -78,15 +82,18 @@ export default class AppGraphic extends HTMLElement {
 			let width = Number(dimensions.split(',')[0].trim())
 			let height = Number(dimensions.split(',')[1].trim())
 			graphic.style.gridTemplateColumns = `repeat(${ width }, 32px)`
-			let qtt = width * height
+			this.qtt = width * height
 			const appendChildren = () => {
 				let y = Math.floor(graphic.children.length / width)
 				let x = graphic.children.length - width * y
 				graphic.appendChild(new graphicSquare(x, y, children ? children[graphic.children.length] : null))
-				
-				document.body.querySelector('#loadingProgress').innerHTML = `Gerando gráfico... ${ Math.ceil(graphic.children.length / (qtt / 100)) }%`
-				if (graphic.children.length < qtt)
-					requestAnimationFrame(appendChildren)
+
+				document.body.querySelector('#loadingProgress').innerHTML = `Gerando gráfico... ${ Math.ceil(graphic.children.length / (this.qtt / 100)) }%`
+				if (graphic.children.length < this.qtt) {
+					this.timer = setTimeout(() => {
+						appendChildren()
+					}, 16)
+				}
 				else {
 					document.body.removeChild(this.loading)
 					this.loading = null
