@@ -71,6 +71,7 @@ export default class ColorSelector extends HTMLElement {
 					`
 				button.onclick = () => {
 					this.shadowRoot.querySelector('#colorSelector').value = color
+					localStorage.setItem('currentColor', color)
 					document.dispatchEvent(new CustomEvent('colorChanged', {detail: color}))
 				}
 				let rmBt = button.appendChild(document.createElement('button'))
@@ -103,6 +104,11 @@ export default class ColorSelector extends HTMLElement {
 			let recentColors = JSON.parse(localStorage.getItem('recentColors'))
 			this.updateRecentColors(recentColors)
 		}
+
+		document.addEventListener('loadFile', () => {
+			this.shadowRoot.querySelector('#colorSelector').value = localStorage.getItem('currentColor')
+			this.updateRecentColors(JSON.parse(localStorage.getItem('recentColors')))
+		})
 	}
 
 	connectedCallback() {

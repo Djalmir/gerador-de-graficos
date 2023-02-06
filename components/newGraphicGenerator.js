@@ -44,11 +44,11 @@ template.innerHTML = /*html*/`
 		<div id="dimensionsContainer">
 			<label>
 				Largura
-				<input type="number" id="widthInput" value="16">
+				<input type="number" id="widthInput">
 			</label>
 			<label>
 				Altura
-				<input type="number" id="heightInput" value="16">
+				<input type="number" id="heightInput">
 			</label>
 		</div>
 		<div id="colorsContainer">
@@ -79,15 +79,17 @@ export default class newGraphicGenerator extends HTMLElement {
 		let newGraphButton = this.shadowRoot.querySelector('#newGraphButton')
 		let widthInput = this.shadowRoot.querySelector('#widthInput')
 		let heightInput = this.shadowRoot.querySelector('#heightInput')
+		widthInput.value = localStorage.getItem('dimensions') ? Number(localStorage.getItem('dimensions').split(',')[0].trim()) : 16
+		heightInput.value = localStorage.getItem('dimensions') ? Number(localStorage.getItem('dimensions').split(',')[1].trim()) : 16
 
 		let bgColorSelector = this.shadowRoot.querySelector('#bgColorSelector')
-		bgColorSelector.value = localStorage.getItem('backgroundColor')||'#303030'
+		bgColorSelector.value = localStorage.getItem('backgroundColor') || '#303030'
 		bgColorSelector.oninput = () => {
 			localStorage.setItem('backgroundColor', bgColorSelector.value)
 		}
 
 		let borderColorSelector = this.shadowRoot.querySelector('#borderColorSelector')
-		borderColorSelector.value = localStorage.getItem('borderColor')||'#202020'
+		borderColorSelector.value = localStorage.getItem('borderColor') || '#202020'
 		borderColorSelector.oninput = () => {
 			localStorage.setItem('borderColor', borderColorSelector.value)
 		}
@@ -106,6 +108,13 @@ export default class newGraphicGenerator extends HTMLElement {
 				}
 			}
 		}
+
+		document.addEventListener('loadFile', () => {
+			widthInput.value = localStorage.getItem('dimensions') ? Number(localStorage.getItem('dimensions').split(',')[0].trim()) : 16
+			heightInput.value = localStorage.getItem('dimensions') ? Number(localStorage.getItem('dimensions').split(',')[1].trim()) : 16
+			bgColorSelector.value = localStorage.getItem('backgroundColor') || '#303030'
+			borderColorSelector.value = localStorage.getItem('borderColor') || '#202020'
+		})
 	}
 }
 

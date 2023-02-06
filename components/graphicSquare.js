@@ -6,7 +6,7 @@ template.innerHTML = /*html*/`
 `
 
 export default class GraphicSquare extends HTMLElement {
-	constructor(x, y) {
+	constructor(x, y, bg) {
 		super()
 		this.x = x
 		this.y = y
@@ -21,10 +21,13 @@ export default class GraphicSquare extends HTMLElement {
 			width: 32px;
 			height: 32px;
 			margin: 0;
-			background: ${ localStorage.getItem('backgroundColor') || 'transparent' };
+			background: ${ bg || localStorage.getItem('backgroundColor') || 'transparent' };
 			border: 1px solid ${ localStorage.getItem('borderColor') || '#202020' };
 			box-sizing: border-box;
 		`
+
+		if (bg)
+			this.setAttribute('color', bg)
 
 		this.draw = (e) => {
 			switch (e.which) {
