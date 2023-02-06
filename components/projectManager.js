@@ -82,22 +82,29 @@ export default class projectManager extends HTMLElement {
 				let canvas = document.createElement('canvas')
 				let columns = Number(localStorage.getItem('dimensions').split(',')[0].trim()) || 16
 				let rows = Number(localStorage.getItem('dimensions').split(',')[1].trim()) || 16
-				if (keepBorders)
-					canvas.width = columns * 32 + 1
-				else
-					canvas.width = columns * 32 - 1
-				canvas.height = rows * 32
+				if (keepBorders) {
+					canvas.width = columns * 32
+					canvas.height = rows * 32
+				}
+				else {
+					canvas.width = columns
+					canvas.height = rows
+				}
+
 				let ctx = canvas.getContext('2d')
 				ctx.fillStyle = localStorage.getItem('borderColor') || '#202020'
 				ctx.fillRect(0, 0, canvas.width, canvas.height)
 				let squares = document.querySelector('#appGraphic').shadowRoot.querySelectorAll('graphic-square')
-				squares.forEach((square) => {
+				squares.forEach((square, index) => {
 					let boundings = square.getBoundingClientRect()
 					ctx.fillStyle = square.getAttribute('color') || localStorage.getItem('backgroundColor') || '#202020'
 					if (keepBorders)
 						ctx.fillRect(boundings.x + 2 - square.parentElement.offsetLeft, boundings.y + 1 - square.parentElement.offsetTop, 30, 30)
-					else
-						ctx.fillRect(boundings.x - square.parentElement.offsetLeft, boundings.y - square.parentElement.offsetTop, 33, 32)
+					else {
+						let y = Math.floor(index / columns)
+						let x = index - columns * y
+						ctx.fillRect(x, y, 1, 1)
+					}
 				})
 
 				let img = new Image()
