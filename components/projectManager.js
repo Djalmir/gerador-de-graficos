@@ -29,20 +29,22 @@ export default class projectManager extends HTMLElement {
 
 		this.shadowRoot.querySelector('#saveBt').onclick = () => {
 			let fileName = prompt('Informe o nome do projeto')
-			let project = {
-				dimensions: localStorage.getItem('dimensions') || '16,16',
-				backgroundColor: localStorage.getItem('backgroundColor') || '#303030',
-				borderColor: localStorage.getItem('borderColor') || '#202020',
-				currentColor: localStorage.getItem('currentColor') || '#ccc',
-				recentColors: localStorage.getItem('recentColors') || '[]',
-				children: Array.from(document.querySelector('#appGraphic').shadowRoot.querySelector('#graphic').children).map((child) => {
-					return child.getAttribute('color') || ''
-				})
+			if (fileName) {
+				let project = {
+					dimensions: localStorage.getItem('dimensions') || '16,16',
+					backgroundColor: localStorage.getItem('backgroundColor') || '#303030',
+					borderColor: localStorage.getItem('borderColor') || '#202020',
+					currentColor: localStorage.getItem('currentColor') || '#ccc',
+					recentColors: localStorage.getItem('recentColors') || '[]',
+					children: Array.from(document.querySelector('#appGraphic').shadowRoot.querySelector('#graphic').children).map((child) => {
+						return child.getAttribute('color') || ''
+					})
+				}
+				let a = document.createElement('a')
+				a.href = `data:text/json;charset=utf-8,${ encodeURIComponent(JSON.stringify(project)) }`
+				a.download = `${ fileName }.json`
+				a.click()
 			}
-			let a = document.createElement('a')
-			a.href = `data:text/json;charset=utf-8,${ encodeURIComponent(JSON.stringify(project)) }`
-			a.download = `${ fileName }.json`
-			a.click()
 		}
 
 		this.filePicker = this.shadowRoot.querySelector('#filePicker')
@@ -70,42 +72,44 @@ export default class projectManager extends HTMLElement {
 
 		this.shadowRoot.querySelector('#exportBt').onclick = () => {
 			let keepBorders = confirm('Deseja manter as bordas?')
-			document.querySelector('#appGraphic').currentZoom = 1
-			let container = document.querySelector('#appGraphic').shadowRoot.querySelector('#container')
-			container.scrollTo(0, 0)
-			let graphic = container.querySelector('#graphic')
-			graphic.style.transform = `scale(1)`
-			let canvas = document.createElement('canvas')
-			let columns = Number(localStorage.getItem('dimensions').split(',')[0].trim()) || 16
-			let rows = Number(localStorage.getItem('dimensions').split(',')[1].trim()) || 16
-			if (keepBorders)
-				canvas.width = columns * 32 + 1
-			else
-				canvas.width = columns * 32 - 1
-			canvas.height = rows * 32
-			let ctx = canvas.getContext('2d')
-			ctx.fillStyle = localStorage.getItem('borderColor') || '#202020'
-			ctx.fillRect(0, 0, canvas.width, canvas.height)
-			let squares = document.querySelector('#appGraphic').shadowRoot.querySelectorAll('graphic-square')
-			squares.forEach((square) => {
-				let boundings = square.getBoundingClientRect()
-				ctx.fillStyle = square.getAttribute('color') || localStorage.getItem('backgroundColor') || '#202020'
-				if (keepBorders)
-					ctx.fillRect(boundings.x + 2 - square.parentElement.offsetLeft, boundings.y + 1 - square.parentElement.offsetTop, 30, 30)
-				else
-					ctx.fillRect(boundings.x - square.parentElement.offsetLeft, boundings.y - square.parentElement.offsetTop, 33, 32)
-			})
-
-			let img = new Image()
-			img.src = canvas.toDataURL()
-			img.style.width = '100%'
-			img.style.height = '100%'
-			let a = document.createElement('a')
-			a.href = img.src
 			let fileName = prompt('Digite o nome da imagem')
-			a.download = `${ fileName }.png`
-			a.click()
-			a.remove()
+			if (fileName) {
+				document.querySelector('#appGraphic').currentZoom = 1
+				let container = document.querySelector('#appGraphic').shadowRoot.querySelector('#container')
+				container.scrollTo(0, 0)
+				let graphic = container.querySelector('#graphic')
+				graphic.style.transform = `scale(1)`
+				let canvas = document.createElement('canvas')
+				let columns = Number(localStorage.getItem('dimensions').split(',')[0].trim()) || 16
+				let rows = Number(localStorage.getItem('dimensions').split(',')[1].trim()) || 16
+				if (keepBorders)
+					canvas.width = columns * 32 + 1
+				else
+					canvas.width = columns * 32 - 1
+				canvas.height = rows * 32
+				let ctx = canvas.getContext('2d')
+				ctx.fillStyle = localStorage.getItem('borderColor') || '#202020'
+				ctx.fillRect(0, 0, canvas.width, canvas.height)
+				let squares = document.querySelector('#appGraphic').shadowRoot.querySelectorAll('graphic-square')
+				squares.forEach((square) => {
+					let boundings = square.getBoundingClientRect()
+					ctx.fillStyle = square.getAttribute('color') || localStorage.getItem('backgroundColor') || '#202020'
+					if (keepBorders)
+						ctx.fillRect(boundings.x + 2 - square.parentElement.offsetLeft, boundings.y + 1 - square.parentElement.offsetTop, 30, 30)
+					else
+						ctx.fillRect(boundings.x - square.parentElement.offsetLeft, boundings.y - square.parentElement.offsetTop, 33, 32)
+				})
+
+				let img = new Image()
+				img.src = canvas.toDataURL()
+				img.style.width = '100%'
+				img.style.height = '100%'
+				let a = document.createElement('a')
+				a.href = img.src
+				a.download = `${ fileName }.png`
+				a.click()
+				a.remove()
+			}
 		}
 	}
 
