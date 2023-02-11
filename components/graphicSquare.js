@@ -15,7 +15,7 @@ export default class GraphicSquare extends HTMLElement {
 
 		this.currentColor = localStorage.getItem('currentColor') || '#ccc'
 
-		this.shadowRoot.querySelector('abbr').setAttribute('title', `Linha: ${ this.y }, Coluna: ${ this.x }`)
+		this.shadowRoot.querySelector('abbr').setAttribute('title', `Linha: ${ this.y+1 }, Coluna: ${ this.x+1 }`)
 
 		this.shadowRoot.querySelector('div').style = `
 			width: 32px;
